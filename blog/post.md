@@ -1,4 +1,4 @@
-# AI Code Detectors Detect Your Human Baseline, Not AI
+# The Best Human Coders Are Undetectable
 
 *Posted by Cliff Harsey | SentinalAI Research*
 
