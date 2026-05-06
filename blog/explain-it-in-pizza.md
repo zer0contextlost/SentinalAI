@@ -86,14 +86,12 @@ world, "human" means "NY slice joint."
 
 ### The Features That Don't Lie
 
-Not all features flipped. Some were consistent across all three shops:
+Not all features flipped. Some were consistent across all three shops — things like
+how thick the crust is relative to the toppings, how evenly the cheese is distributed,
+how often the cook used a particular fold pattern at the edge.
 
-- How long the average line of sauce is (consistent direction everywhere)
-- How much of the pizza uses snake-pattern toppings (consistent everywhere)
-- Whether the crust tapers at the edges (consistent everywhere)
-
-These 9 "stable features" are the ones that measure something real about robot
-output — not just something real about the *contrast* between robots and one
+We found 9 of these stable signals. They measure something real about how robot machines
+work everywhere — not just something real about the contrast between robots and one
 specific type of human.
 
 When we use only those 9 features, our cross-shop accuracy goes from 38% to 62%.
@@ -171,7 +169,10 @@ human population from this specific AI." It doesn't mean "we can detect AI."
 
 The test is: **does it still work when you change who the humans are?**
 
-Ours doesn't. Until you train on all three kinds of humans. Then it does.
+Ours doesn't. Until you train on all three kinds of humans. Then it does —
+for those three kinds. If a fourth shop opens, say a wood-fired Neapolitan place,
+we'd probably need their pizzas too. The fix isn't permanent; it's as broad as
+your human sample.
 
 The lesson for anyone building or using AI code detectors:
 
@@ -184,5 +185,5 @@ The lesson for anyone building or using AI code detectors:
 *This is a simplified explanation of the SentinalAI paper:*
 *"The Human Baseline Problem: Why AI Code Detectors Fail Across Domains"*
 
-*Want the actual numbers? [Read the full blog post with real data →](post)*  
+*Ready for the data tables? [Read the full blog post →](post)*  
 *Want the academic paper? [PAPER.md](../PAPER.md)*

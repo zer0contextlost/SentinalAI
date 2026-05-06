@@ -1,4 +1,4 @@
-# AI Code Detectors Don't Detect AI — They Detect Your Human Baseline
+# AI Code Detectors Detect Your Human Baseline, Not AI
 
 *Posted by Cliff Harsey | SentinalAI Research*
 
@@ -41,12 +41,36 @@ ran a proper cross-domain evaluation. Here's what the numbers look like:
 Random chance is 0.50. A classifier trained on 100,000 samples from 34 different
 AI models performs *worse than flipping a coin* when you change the human baseline.
 
+"Worse than random" isn't just "noisy" — it means the classifier is **confidently wrong**,
+flipping its labels in a predictable direction. It's not failing to find a pattern; it
+learned a real pattern that happens to be inverted in the new domain. That's a more
+damning result than "doesn't generalize."
+
 ---
 
-## Why? I Ran the Diagnostics
+## Why? Start With the Features That Lie
 
-The obvious question: is this just generic "domain shift"? Or is there something
-specific happening?
+Before looking at which features are reliable, here are the ones that actively betray you.
+These "conflict features" are statistically significant in both training and test corpora —
+but they point in **opposite directions**:
+
+| Feature | SemEval: AI vs human | Codeforces: AI vs human |
+|---|---|---|
+| line_count | AI writes **+17 more** lines | AI writes **−11 fewer** lines |
+| comment_line_ratio | AI comments **more** | AI comments **less** |
+| whitespace_ratio | AI uses **more** whitespace | AI uses **less** whitespace |
+
+Same feature. Opposite signal. In SemEval, the human baseline is scraped forum code —
+terse, uncommented — so AI looks verbose by comparison. In Codeforces, the human
+baseline is competitive programmers — verbose, explicit — so AI looks compact.
+The classifier learns the *contrast between AI and whatever specific humans it saw*,
+not anything stable about AI itself.
+
+This is why cross-corpus transfer doesn't just degrade — it inverts.
+
+---
+
+## The Overlap: Why HumanEval Humans Look Like AI
 
 I measured where each corpus's human and AI distributions sit in feature space.
 For the top 10 most discriminative features, here's what I found:
@@ -84,21 +108,6 @@ This isn't random domain shift. It's **human-quality drift**:
 > snippets to competitive submission to carefully crafted canonical functions.
 > A detector trained on any single human population learns the location of *that
 > population* in feature space, not anything fundamental about AI output.
-
-There are also "conflict features" — features that point in completely opposite
-directions across datasets:
-
-| Feature | SemEval: AI vs human | Codeforces: AI vs human |
-|---|---|---|
-| line_count | AI writes +17 more lines | AI writes -11 fewer lines |
-| comment_line_ratio | AI comments more | AI comments less |
-| whitespace_ratio | AI uses more whitespace | AI uses less whitespace |
-
-Same feature. Opposite signal. Because in SemEval, the human baseline is scraped
-forum code (terse, uncommented), so AI looks verbose by comparison. In Codeforces,
-the human baseline is competitive programmers (verbose, explicit), so AI looks
-compact by comparison. The classifier learns the contrast between AI and whatever
-specific humans it saw — not anything stable about AI itself.
 
 ---
 
@@ -149,20 +158,6 @@ proves I know I can't."
 
 ---
 
-## The Model Fingerprinting Bonus
-
-While I had the data, I also tested 35-way classification: can you identify
-*which* AI model wrote a piece of code?
-
-- **Macro F1 = 0.2342** vs random chance of 0.0286 (~8x above chance)
-- Models cluster by architecture family — Phi-3 variants look like each other,
-  Yi-Coder variants look like each other
-- `starcoder2-15b` and `starcoder2-3b` are 23% confused — bigger model, same recipe
-- **The human class is the most recognizable** (F1 = 0.622) within SemEval,
-  which is itself evidence that "human" is a distinct mode within that corpus
-
----
-
 ## What This Means for AI Detectors in the Wild
 
 If someone shows you an AI code detector with 95% accuracy, ask one question:
@@ -173,12 +168,33 @@ If the answer is "scraped GitHub repos" or "student submissions" or "Stack Overf
 answers" — and your deployment context involves a different kind of human writer —
 that 95% number does not apply to you.
 
+If you're being shown an AI-detection tool for hiring, academic integrity, or code
+review — ask the vendor what the human population in their training set looks like,
+and whether it matches who actually writes code in your context. If they can't answer,
+the accuracy number is not predictive of anything in your deployment.
+
 The detection is real. The signal is there. But it's calibrated to a specific human
 population, and when that population shifts, the calibration inverts.
 
 The honest version of AI code detection isn't "this was written by AI." It's:
 "this code is X standard deviations from the average of the humans I've characterized.
 Make of that what you will."
+
+---
+
+## Appendix: Model Fingerprinting
+
+While I had the data, I also tested a separate question: can you identify *which* AI
+model wrote a piece of code, from style alone?
+
+- **Macro F1 = 0.2342** across 35 classes (34 AI models + human) vs random chance of 0.0286 — ~8x above chance
+- Models cluster by architecture family — Phi-3 variants are nearly indistinguishable from each other, Yi-Coder variants similarly
+- `starcoder2-15b` and `starcoder2-3b` are 23% confused — bigger model, same stylistic recipe
+- **The human class is the most recognizable** (F1 = 0.622) within SemEval
+
+This is a separate finding from the detection problem: within a single corpus,
+individual models do have distinguishable fingerprints. The failure is cross-domain
+transfer, not signal existence. More in [PAPER.md](../PAPER.md).
 
 ---
 
