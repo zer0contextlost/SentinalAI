@@ -1,0 +1,29 @@
+# Corpus data — too large for git
+corpus/
+
+# Logs
+collector/github_fetch.log
+collector/github_fetch_err.log
+*.log
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.env
+
+# Models output
+models/feature_importance.csv
+models/paired_feature_importance.csv
+
+# Research writeup
+FINDINGS.md
+
+# OS
+.DS_Store
+Thumbs.db
