@@ -21,8 +21,6 @@ build/
 models/feature_importance.csv
 models/paired_feature_importance.csv
 
-# Research writeup
-FINDINGS.md
 
 # OS
 .DS_Store
