@@ -1,6 +1,6 @@
 # The Best Human Coders Are Undetectable
 
-*Posted by Cliff Harsey | SentinalAI Research*
+*SentinalAI Research*
 
 ---
 
